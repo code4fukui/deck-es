@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>deck.gl Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+<div id="app"></div>
+</body>
+<!--
+<script type="text/javascript" src="./deckgl@8.8.13.min.js"></script>
+-->
+<script type="module">
+import { deck } from "./deck.js";
+
+const onTilesLoad = null;
+const showBorder = true;
+const tileLayer = new deck.TileLayer({
+    // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
+    data: [
+      'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    ],
+
+    // Since these OSM tiles support HTTP/2, we can make many concurrent requests
+    // and we aren't limited by the browser to a certain number per domain.
+    maxRequests: 20,
+
+    pickable: true,
+    onViewportLoad: onTilesLoad,
+    autoHighlight: showBorder,
+    highlightColor: [60, 60, 60, 40],
+    // https://wiki.openstreetmap.org/wiki/Zoom_levels
+    minZoom: 0,
+    maxZoom: 19,
+    tileSize: 256,
+    zoomOffset: devicePixelRatio === 1 ? -1 : 0,
+    renderSubLayers: props => {
+      const {
+        bbox: {west, south, east, north}
+      } = props.tile;
+
+      return [
+        new deck.BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [west, south, east, north]
+        }),
+        showBorder &&
+          new deck.PathLayer({
+            id: `${props.id}-border`,
+            visible: props.visible,
+            data: [
+              [
+                [west, north],
+                [west, south],
+                [east, south],
+                [east, north],
+                [west, north]
+              ]
+            ],
+            getPath: d => d,
+            getColor: [255, 0, 0],
+            widthMinPixels: 4
+          })
+      ];
+    }
+  });
+
+new deck.DeckGL({
+  mapStyle: 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json',
+  initialViewState: {
+    longitude: 136,
+    latitude: 35,
+    zoom: 8
+  },
+  controller: true,
+  layers: [
+    /*
+    new deck.ScatterplotLayer({
+      data: [
+        {position: [-122.45, 37.8], color: [255, 0, 0], radius: 100}
+      ],
+      getColor: d => d.color,
+      getRadius: d => d.radius
+    })
+    */
+   tileLayer,
+  ],
+});
+</script>
+</html>
