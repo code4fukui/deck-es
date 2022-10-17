@@ -12,6 +12,12 @@ import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
 
 - [国土地理院地図](https://code4fukui.github.io/deck-es/)
 
+## How to Build
+
+```bash
+sh build.sh
+```
+
 ## Dependency
 
 https://unpkg.com/deck.gl@latest/dist.min.js
