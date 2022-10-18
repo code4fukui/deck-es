@@ -20,4 +20,4 @@ sh build.sh
 
 ## Dependency
 
-https://unpkg.com/deck.gl@latest/dist.min.js
+- [deck.gl](https://deck.gl/) - [https://unpkg.com/deck.gl@latest/dist.min.js](https://unpkg.com/deck.gl@latest/dist.min.js)
