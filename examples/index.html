@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>国土地理院地図 with deck.gl Example</title>
+</head>
+<body>
+<script type="module">
+import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
+
+const tileLayer = new deck.TileLayer({
+  // https://maps.gsi.go.jp/development/ichiran.html
+  data: [
+    'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+  ],
+  // Since these OSM tiles support HTTP/2, we can make many concurrent requests
+  // and we aren't limited by the browser to a certain number per domain.
+  maxRequests: 20,
+
+  //pickable: true,
+  onViewportLoad: null,
+  //highlightColor: [60, 60, 60, 40],
+  // https://wiki.openstreetmap.org/wiki/Zoom_levels
+  minZoom: 0,
+  maxZoom: 18,
+  tileSize: 256,
+  zoomOffset: devicePixelRatio === 1 ? -1 : 0,
+  renderSubLayers: props => {
+    const {
+      bbox: { west, south, east, north }
+    } = props.tile;
+    return [
+      new deck.BitmapLayer(props, {
+        data: null,
+        image: props.data,
+        bounds: [west, south, east, north]
+      })
+    ];
+  },
+});
+
+new deck.DeckGL({
+  initialViewState: {
+    longitude: 137,
+    latitude: 37,
+    zoom: 5
+  },
+  controller: true,
+  layers: [tileLayer],
+});
+</script>
+
+<a id=map_credit href=https://maps.gsi.go.jp/development/ichiran.html>&copy;国土地理院</a>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+#map_credit {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.2em;
+  margin: 0;
+  background-color: rgba(255, 255, 255, .7);
+  font-size: 70%;
+  color: black;
+  z-index: 10000;
+}
+</style>
+
+</body>
+</html>
