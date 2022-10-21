@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>TripsLayer ES modules version demo (without React)</title>
+</head><body>
+<script type="module">
+import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
+const { AmbientLight, PointLight, LightingEffect, PolygonLayer, TripsLayer } = deck;
+
+const DATA_URL = {
+  BUILDINGS: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json",
+  TRIPS: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json",
+};
+
+const ambientLight = new AmbientLight({
+  color: [255, 255, 255],
+  intensity: 1.0
+});
+const pointLight = new PointLight({
+  color: [255, 255, 255],
+  intensity: 2.0,
+  position: [-74.05, 40.7, 8000]
+});
+const lightingEffect = new LightingEffect({ ambientLight, pointLight });
+
+const material = {
+  ambient: 0.1,
+  diffuse: 0.6,
+  shininess: 32,
+  specularColor: [60, 64, 70]
+};
+
+const DEFAULT_THEME = {
+  buildingColor: [74, 80, 87],
+  trailColor0: [253, 128, 93],
+  trailColor1: [23, 184, 190],
+  material,
+  effects: [lightingEffect]
+};
+
+const INITIAL_VIEW_STATE = {
+  longitude: -74,
+  latitude: 40.711,
+  zoom: 14.5,
+  pitch: 65,
+  maxPitch: 85,
+  bearing: -20,
+};
+
+const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
+
+const buildings = DATA_URL.BUILDINGS;
+const trips = await (await fetch(DATA_URL.TRIPS)).json();
+const trailLength = 180;
+const initialViewState = INITIAL_VIEW_STATE;
+const mapStyle = MAP_STYLE;
+const theme = DEFAULT_THEME;
+
+const checkTimeStamps = (trips) => {
+  let tmin = Number.MAX_VALUE;
+  let tmax = -tmin;
+  for (const trip of trips) {
+    for (const t of trip.timestamps) {
+      if (t < tmin) {
+        tmin = t;
+      }
+      if (t > tmax) {
+        tmax = t;
+      }
+    }
+  }
+  const loopLength = tmax - tmin;
+  const startTime = tmin;
+  return { startTime, loopLength };
+};
+
+const { startTime, loopLength } = checkTimeStamps(trips);
+
+const makeTripsLayer = (currentTime) => {
+  return new TripsLayer({
+    id: "trips",
+    data: trips,
+    getPath: d => d.path,
+    getTimestamps: d => d.timestamps,
+    getColor: d => (d.vendor === 0 ? theme.trailColor0 : theme.trailColor1),
+    opacity: 0.3,
+    widthMinPixels: 2,
+    rounded: true,
+    trailLength: 200,
+    currentTime,
+    shadowEnabled: false,
+  });
+};
+let tripsLayer = makeTripsLayer(0);
+
+const landCover = [
+  [
+    [-73.95, 40.68],
+    [-74.05, 40.68],
+    [-74.05, 40.75],
+    [-73.95, 40.75]
+  ]
+];
+const groundLayer = new PolygonLayer({
+  id: "ground",
+  data: landCover,
+  getPolygon: f => f,
+  stroked: false,
+  getFillColor: [230, 230, 230]
+});
+
+const buildignsLayer = new PolygonLayer({
+  id: "buildings",
+  data: buildings,
+  extruded: true,
+  wireframe: false,
+  opacity: 0.5,
+  getPolygon: f => f.polygon,
+  getElevation: f => f.height,
+  getFillColor: theme.buildingColor,
+  material: theme.material
+});
+
+const deckgl = new deck.Deck({
+  layers: [groundLayer, tripsLayer, buildignsLayer],
+  effects: theme.effects,
+  initialViewState,
+  controller: true,
+});
+
+const torg = new Date().getTime();
+const redraw = () => {
+  const t = (new Date().getTime() - torg) % loopLength;
+  tripsLayer = makeTripsLayer(t + startTime);
+  deckgl.setProps({ layers: [groundLayer, tripsLayer, buildignsLayer] });
+  requestAnimationFrame(redraw);
+};
+redraw();
+</script>
+</body></html>
