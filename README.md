@@ -10,7 +10,8 @@ import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
 
 ## Demo
 
-- [国土地理院地図](https://code4fukui.github.io/deck-es/)
+- [国土地理院地図](https://code4fukui.github.io/deck-es/examples/)
+- [TripsLayerによるルートアニメーション表示](https://code4fukui.github.io/deck-es/examples/trips.html)
 
 ## How to Build
 
