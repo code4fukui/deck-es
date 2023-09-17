@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>Geo3x3</title>
+</head>
+<body>
+<script type="module">
+import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
+import { createGSILayer } from "./createGSILayer.js";
+import { createGeo3x3Layer } from "./createGeo3x3Layer.js";
+import { processKeyGeo3x3 } from "./processKeyGeo3x3.js";
+import { Geo3x3 } from "https://geo3x3.com/Geo3x3.js";
+
+//in_geo3x3.value = "E913873"; // 福井県
+in_geo3x3.value = "E913"; // 福井県
+
+const baseLayer = createGSILayer();
+const geo3x3Layer = createGeo3x3Layer(in_geo3x3.value);
+
+const deckgl = new deck.DeckGL({
+  container: "mapc",
+  initialViewState: {
+    longitude: 137,
+    latitude: 37,
+    zoom: 5
+  },
+  controller: true,
+  layers: [baseLayer, geo3x3Layer],
+});
+
+document.body.onkeydown = (e) => {
+  e.preventDefault();
+  const bks = in_geo3x3.value;
+  const s = processKeyGeo3x3(e, bks);
+  if (bks != s) {
+    in_geo3x3.value = s;
+    const layer = createGeo3x3Layer(s);
+    const g = Geo3x3.decode(s);
+    console.log(g);
+    deckgl.setProps({
+      layers: [baseLayer, layer],
+      viewState: {
+        longitude: g.lng,
+        latitude: g.lat,
+        zoom: g.level + 1,
+      }
+    });
+  }
+};
+</script>
+
+<h1>Geo3x3</h1>
+
+<input type=text id=in_geo3x3>
+<div id=mapc>
+<canvas id=map>
+</canvas>
+<a id=map_credit href=https://maps.gsi.go.jp/development/ichiran.html>&copy;国土地理院</a>
+</div>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+#mapc {
+  width: 100%;
+  height: 80vh;
+}
+#map_credit {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.2em;
+  margin: 0;
+  background-color: rgba(255, 255, 255, .7);
+  font-size: 70%;
+  color: black;
+  z-index: 10000;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>国土地理院地図 with deck.gl Example</title>
+</head>
+<body>
+<script type="module">
+import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
+import { createGSILayer } from "./createGSILayer.js";
+import { Geo3x3 } from "https://geo3x3.com/Geo3x3.js";
+
+const data = [
+  {
+    center: [135.712672, 35.656470],
+  },
+];
+const level = 7;
+const calcGeo3x3 = (data) => { // center -> polygon
+  for (const d of data) {
+    const ll = d.center;
+    const g = Geo3x3.encode(ll[1], ll[0], level);
+    const dec = Geo3x3.decode(g);
+    const polygon = [];
+    const a = dec.lat;
+    const n = dec.lng;
+    const u = dec.unit;
+    console.log(dec);
+    polygon.push([n - u, a - u]);
+    polygon.push([n + u, a - u]);
+    polygon.push([n + u, a + u]);
+    polygon.push([n - u, a + u]);
+    d.polygon = polygon;
+  }
+};
+calcGeo3x3(data);
+
+const polygonLayer = new deck.PolygonLayer({
+  id: 'polygon-layer',
+  data,
+  //pickable: true,
+  //extruded: true,
+  stroked: true,
+  filled: true,
+  //elevationScale: 8,
+  //getElevationWeight: 30,
+  getPosition: d => d.polygon,
+  getElevation: 10,
+  getFillColor: [255, 0, 0, 255 * .2],
+  getLineColor: [0, 0, 0],
+  getLineWidth: 500,
+});
+
+new deck.DeckGL({
+  initialViewState: {
+    longitude: 137,
+    latitude: 37,
+    zoom: 5
+  },
+  controller: true,
+  layers: [createGSILayer(), polygonLayer],
+});
+</script>
+
+<a id=map_credit href=https://maps.gsi.go.jp/development/ichiran.html>&copy;国土地理院</a>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+#map_credit {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.2em;
+  margin: 0;
+  background-color: rgba(255, 255, 255, .7);
+  font-size: 70%;
+  color: black;
+  z-index: 10000;
+}
+</style>
+
+</body>
+</html>

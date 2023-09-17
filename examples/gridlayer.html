@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>国土地理院地図 with deck.gl Example</title>
+</head>
+<body>
+<script type="module">
+import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
+import { createGSILayer } from "./createGSILayer.js";
+const { GridLayer } = deck;
+
+const data = [
+  {
+    COORDINATES: [135.712672,35.656470],
+  },
+  {
+    COORDINATES: [137, 37],
+  },
+];
+
+  const gridLayer = new GridLayer({
+    id: 'grid-layer',
+    data,
+    pickable: true,
+    extruded: true,
+    cellSize: 10000,
+    //elevationScale: 8,
+    //getElevationWeight: 30,
+    getPosition: d => d.COORDINATES
+  });
+
+new deck.DeckGL({
+  initialViewState: {
+    longitude: 137,
+    latitude: 37,
+    zoom: 5
+  },
+  controller: true,
+  layers: [createGSILayer(), gridLayer],
+});
+</script>
+
+<a id=map_credit href=https://maps.gsi.go.jp/development/ichiran.html>&copy;国土地理院</a>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+#map_credit {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.2em;
+  margin: 0;
+  background-color: rgba(255, 255, 255, .7);
+  font-size: 70%;
+  color: black;
+  z-index: 10000;
+}
+</style>
+
+</body>
+</html>
