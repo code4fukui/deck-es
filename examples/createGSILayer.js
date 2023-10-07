@@ -2,7 +2,8 @@ export const createGSILayer = () => {
   const tileLayer = new deck.TileLayer({
     // https://maps.gsi.go.jp/development/ichiran.html
     data: [
-      'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+      //"https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
+      "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
     ],
     maxRequests: 20,
 
