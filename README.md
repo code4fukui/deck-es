@@ -2,26 +2,29 @@
 
 [deck.gl](https://deck.gl/) in JavaScript ES modules
 
+## Demo
+
+- [National Geographic Institute Map](https://code4fukui.github.io/deck-es/examples/)
+- [Route Animation using TripsLayer](https://code4fukui.github.io/deck-es/examples/trips.html)
+
+## Features
+
+- Provides a set of deck.gl layers as ES modules
+- Includes examples for displaying National Geographic Institute maps and route animations
+
+## Requirements
+
+- Modern browser supporting ES modules
+
 ## Usage
 
 ```JavaScript
 import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
 ```
 
-## Demo
-
-- [国土地理院地図](https://code4fukui.github.io/deck-es/examples/)
-- [TripsLayerによるルートアニメーション表示](https://code4fukui.github.io/deck-es/examples/trips.html)
-
-## How to Build
-
-```bash
-sh build.sh
-```
-
 ## Projects
 
-- [deckgl-gsi-terrain-layer](https://github.com/code4fukui/deckgl-gsi-terrain-layer) 国土地理院の標高タイルを用いた地形の3D表示
+- [deckgl-gsi-terrain-layer](https://github.com/code4fukui/deckgl-gsi-terrain-layer) 3D display of terrain using National Geographic Institute elevation tiles
 
 ## Dependency
 
