@@ -1,5 +1,7 @@
 # deck-es
 
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
 [deck.gl](https://deck.gl/) in JavaScript ES modules
 
 ## Demo
