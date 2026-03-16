@@ -2,12 +2,9 @@
 
 > 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
 
+> This is the English README: [README.md](README.md)
+
 [deck.gl](https://deck.gl/) in JavaScript ES modules
-
-## Demo
-
-- [National Geographic Institute Map](https://code4fukui.github.io/deck-es/examples/)
-- [Route Animation using TripsLayer](https://code4fukui.github.io/deck-es/examples/trips.html)
 
 ## Features
 
@@ -31,3 +28,7 @@ import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
 ## Dependency
 
 - [deck.gl](https://deck.gl/) - [https://unpkg.com/deck.gl@latest/dist.min.js](https://unpkg.com/deck.gl@latest/dist.min.js)
+
+## License
+
+MIT License — see [LICENSE](LICENSE).

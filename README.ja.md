@@ -31,4 +31,4 @@ import { deck } from "https://code4fukui.github.io/deck-es/deck.js";
 
 ## ライセンス
 
-なし
+MIT License — see [LICENSE](LICENSE).
